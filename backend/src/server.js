@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import fs from "fs"; // ✅ thêm dòng này
 import { fileURLToPath } from "url";
+import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
@@ -17,6 +18,7 @@ const PORT = ENV.PORT || 3000;
 
 // ✅ Middleware
 app.use(express.json());
+app.use(cookieParser());
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
