@@ -1,38 +1,68 @@
 import express from "express";
 import path from "path";
+import fs from "fs"; // ✅ thêm dòng này
+import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 import { ENV } from "./lib/env.js";
 
-//config
+// ✅ Tạo __dirname chuẩn cho ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const __dirname = path.resolve();
 const PORT = ENV.PORT || 3000;
 
-//middlewares
-app.use(express.json()); //req.body
+// ✅ Middleware
+app.use(express.json());
 
-//Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/messages', messageRoutes);
+// ✅ Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
 
-//make ready for deployment
+console.warn("App running on ", ENV.APP_ENV);
+
+// ✅ Serve frontend build khi chạy production
 if (ENV.APP_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../frontend/", "dist")));
+    try {
+        const frontendPath = path.join(__dirname, "../../frontend/dist");
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend/", "dist", "index.html"));
-    });
+        if (!fs.existsSync(frontendPath)) {
+            console.error("❌ Lỗi: Thư mục build frontend không tồn tại:", frontendPath);
+        } else {
+            // Serve static files
+            app.use(express.static(frontendPath));
+
+            // Route fallback cho SPA (React/Vue)
+            app.get("*", (req, res) => {
+                const indexPath = path.join(frontendPath, "index.html");
+
+                if (!fs.existsSync(indexPath)) {
+                    console.error("❌ Không tìm thấy index.html:", indexPath);
+                    return res.status(404).send("Frontend not found");
+                }
+
+                res.sendFile(indexPath, (err) => {
+                    if (err) {
+                        console.error("❌ Lỗi khi gửi index.html:", err.message);
+                        res.status(500).send("Internal Server Error");
+                    }
+                });
+            });
+        }
+    } catch (error) {
+        console.error("❌ Lỗi khi thiết lập static frontend:", error.message);
+    }
 }
 
-// Start app
-connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+// ✅ Kết nối DB và khởi động server
+connectDB()
+    .then(() => {
+        app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+    })
+    .catch((error) => {
+        console.error("❌ Failed to start server:", error);
+        process.exit(1);
     });
-}).catch(error => {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-});
