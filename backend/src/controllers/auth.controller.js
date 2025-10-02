@@ -58,9 +58,11 @@ export const register = async (req, res) => {
 
         if (user) return res.status(400).json({ message: "Email already exists" });
 
+        // Mã hóa mật khẩu
         const salt = await bcrypt.genSalt(10);
         const hashedPass = await bcrypt.hash(password, salt);
 
+        // Tạo người dùng mới
         const newUser = new User({
             fullName,
             email,
@@ -68,9 +70,10 @@ export const register = async (req, res) => {
         });
 
         if (newUser) {
-            const savedUser = await newUser.save();
-            generateToken(savedUser._id, res);
+            const savedUser = await newUser.save(); // Lưu vào trong DB
+            generateToken(savedUser._id, res); // tạo mã token
 
+            // Trả về data cho client
             res.status(201).json({
                 _id: savedUser._id,
                 fullName: savedUser.fullName,
@@ -78,6 +81,7 @@ export const register = async (req, res) => {
                 profilePic: savedUser.profilePic
             });
 
+            // Send mail to user when they registered successfully
             try {
                 await sendWelcomeEmail(savedUser.email, savedUser.fullName, ENV.CLIENT_URL);
             } catch (error) {
@@ -101,19 +105,32 @@ export const logout = async (_, res) => {
 // Update Profile
 export const updateProfile = async (req, res) => {
     try {
+        // Lấy profilePic (ảnh đại diện) từ phần body của request
         const { profilePic } = req.body;
-        if (!profilePic) return res.status(400).json({ message: "Profile pic is required" });
 
+        // Kiểm tra xem người dùng có gửi ảnh không
+        if (!profilePic)
+            return res.status(400).json({ message: "Profile pic is required" });
+
+        // Lấy ID người dùng hiện tại từ thông tin xác thực (đã lưu trong req.user)
         const userId = req.user._id;
 
+        // Upload ảnh lên Cloudinary (trả về thông tin ảnh bao gồm secure_url)
         const uploadRespone = await cloudinary.uploader.upload(profilePic);
 
+        if (!uploadRespone || !uploadRespone.secure_url) {
+            return res.status(500).json({ message: "Failed to upload image" });
+        }
+
+        // Cập nhật thông tin người dùng trong database:
+        // Gán link ảnh từ Cloudinary vào trường profilePic
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { profilePic: uploadRespone.secure_url },
-            { new: true }
+            { new: true } // Tùy chọn này giúp trả về bản ghi sau khi cập nhật
         );
 
+        // Trả về phản hồi thành công kèm thông tin người dùng đã cập nhật
         res.status(200).json(updatedUser);
     } catch (error) {
         console.log("Error in update profile: ", error);

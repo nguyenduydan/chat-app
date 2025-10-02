@@ -4,10 +4,10 @@ import fs from "fs"; // ✅ thêm dòng này
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 
+import { ENV } from "./lib/env.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
-import { ENV } from "./lib/env.js";
 
 // ✅ Tạo __dirname chuẩn cho ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -62,7 +62,10 @@ if (ENV.APP_ENV === "production") {
 // ✅ Kết nối DB và khởi động server
 connectDB()
     .then(() => {
-        app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`🚀 Host running: http://localhost:${PORT}`);
+        });
     })
     .catch((error) => {
         console.error("❌ Failed to start server:", error);
