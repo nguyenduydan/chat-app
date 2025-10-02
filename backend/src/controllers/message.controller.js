@@ -43,10 +43,25 @@ export const sendMessage = async (req, res) => {
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
 
+        if (!text && !image) {
+            return res.status(400).json({ message: "Message must contain text or image." });
+        }
+        if (senderId.equals(receiverId)) {
+            return res.status(400).json({ message: "Cannot send messages to yourself." });
+        }
+        const receiverExist = await User.exists({ _id: receiverId });
+        if (!receiverExist) {
+            return res.status(400).json({ message: "Receiver not found." });
+        }
+
         let imageUrl;
         if (image) {
             // Upload ảnh base64 lên Cloudinary
             const uploadResponse = await cloudinary.uploader.upload(image);
+
+            if (!uploadResponse || !uploadResponse.secure_url) {
+                return res.status(500).json({ message: "Failed to upload image" });
+            }
 
             // Lưu lại link ảnh từ Cloudinary
             imageUrl = uploadResponse.secure_url;

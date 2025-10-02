@@ -118,6 +118,10 @@ export const updateProfile = async (req, res) => {
         // Upload ảnh lên Cloudinary (trả về thông tin ảnh bao gồm secure_url)
         const uploadRespone = await cloudinary.uploader.upload(profilePic);
 
+        if (!uploadRespone || !uploadRespone.secure_url) {
+            return res.status(500).json({ message: "Failed to upload image" });
+        }
+
         // Cập nhật thông tin người dùng trong database:
         // Gán link ảnh từ Cloudinary vào trường profilePic
         const updatedUser = await User.findByIdAndUpdate(
