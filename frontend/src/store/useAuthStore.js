@@ -1,20 +1,37 @@
+import { api } from "lib/axios";
+import toast from "react-hot-toast";
 import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
-    authUser: { name: "FogDev", _id: 123, age: 22 },
-    isLoggedIn: false,
-    isLoading: false,
+    authUser: null,
+    isCheckingAuth: true,
+    isSigningUp: false,
 
-    login: () => {
-        set({ isLoading: true });
+
+    checkAuth: async () => {
         try {
-            // Perform async login operation
-            console.log("We just logged in");
-            set({ isLoggedIn: true, isLoading: false });
-            set({ isLoggedIn: true, isLoading: false });
+            const res = await api.get("/auth/check");
+            set({ authUser: res.data });
         } catch (error) {
-            set({ isLoading: false });
-            throw error;
+            console.log("Error in authCheck: ", error);
+            set({ authUser: null });
+        } finally {
+            set({ isCheckingAuth: false });
+        }
+    },
+
+    signup: async (data) => {
+        set({ isSigningUp: true });
+        try {
+            const res = await api.post("/auth/register", data);
+            set({ authUser: res.data });
+
+            toast.success("Tạo tài khoản thành công!");
+        } catch (error) {
+            console.log("Error in register: ", error);
+            toast.error(error.response.data.message);
+        } finally {
+            set({ isSigningUp: false });
         }
     }
 }));

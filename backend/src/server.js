@@ -1,13 +1,15 @@
 import express from "express";
 import path from "path";
-import fs from "fs"; // ✅ thêm dòng này
+import fs from "fs";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import { ENV } from "./lib/env.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
+
 
 // ✅ Tạo __dirname chuẩn cho ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -18,6 +20,10 @@ const PORT = ENV.PORT || 3000;
 
 // ✅ Middleware
 app.use(express.json());
+app.use(cors({
+    origin: ENV.CLIENT_URL,
+    credentials: true
+}));
 app.use(cookieParser());
 
 // ✅ Routes
