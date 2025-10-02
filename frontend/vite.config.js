@@ -11,6 +11,7 @@ export default defineConfig({
       "components": "/src/components",
       "lib": "/src/lib",
       "store": "/src/store",
+      "hooks": "/src/hooks"
     },
   },
 });
