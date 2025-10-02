@@ -14,8 +14,9 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  console.log({ authUser });
+  // console.log({ authUser });
 
+  // Loading state
   if (isCheckingAuth) return (
     <div className='min-h-screen bg-slate-900 relative flex items-center justify-center p-4 overflow-hidden'>
       {/* Decorators - Grid BG & glow shapes*/}
