@@ -35,7 +35,7 @@ const router = express.Router();
 // 5. Ưu điểm của việc đặt ở đầu router:
 //    - Không cần viết lại middleware này cho từng route.
 //    - Đảm bảo toàn bộ API messages đều an toàn (chỉ user thật mới truy cập được).
-router.use(protectRoute);
+router.use(arcjetProtection, protectRoute);
 
 router.get('/contacts', getAllContacts);// Get all contacts that the logged-in user has interacted with
 router.get('/chats', getChatPartners);// Get all users that the logged-in user has active chat conversations with
