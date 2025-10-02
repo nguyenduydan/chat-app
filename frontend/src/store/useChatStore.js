@@ -48,7 +48,7 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
-    getMyAllChatsParners: async () => {
+    getMyChatPartners: async () => {
         set({ isUsersLoading: true });
         try {
             const res = await api.get("/messages/chats");
