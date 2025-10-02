@@ -32,6 +32,10 @@
   @apply px-4 py-2 inline-block bg-cyan-500/10 rounded-lg text-cyan-400 hover:text-cyan-500 text-sm transition-colors;
 }
 
+.send-btn {
+  @apply btn btn-circle btn-ghost p-3 font-medium bg-gradient-to-r text-white rounded-full tracking-wide hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-out hover:shadow-cyan-300/40 hover:scale-[1.03];
+}
+
 @keyframes ping-slow {
 
   0%,
