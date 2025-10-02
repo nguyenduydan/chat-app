@@ -1,5 +1,5 @@
 import BorderAnimatedContainer from "components/BorderAnimatedContainer";
-import { MessageCircleIcon, LockIcon, MailIcon, UserIcon, LoaderIcon } from "lucide-react";
+import { MessageCircleIcon, LockIcon, MailIcon, UserIcon } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from "store/useAuthStore";
 import { Link } from "react-router";
@@ -86,7 +86,7 @@ function RegisterPage() {
                                     {/* SUBMIT BUTTON */}
                                     <button className="auth-btn" type="submit" disabled={isSigningUp}>
                                         {isSigningUp ? (
-                                            <LoaderIcon className="w-full h-6 animate-spin text-center" />
+                                            <span className="loading loading-dots loading-md"></span>
                                         ) : (
                                             "Đăng ký"
                                         )}
@@ -95,7 +95,7 @@ function RegisterPage() {
 
                                 <div className="mt-6 text-center">
                                     <Link to="/login" className="auth-link">
-                                        Bạn đã có tài khoản rồi? Đăng nhập
+                                        Bạn đã có tài khoản? Đăng nhập
                                     </Link>
                                 </div>
                             </div>

@@ -6,7 +6,7 @@ export const useAuthStore = create((set) => ({
     authUser: null,
     isCheckingAuth: true,
     isSigningUp: false,
-
+    isLoggingIn: false,
 
     checkAuth: async () => {
         try {
@@ -32,6 +32,31 @@ export const useAuthStore = create((set) => ({
             toast.error(error.response.data.message);
         } finally {
             set({ isSigningUp: false });
+        }
+    },
+    login: async (data) => {
+        set({ isLoggingIn: true });
+        try {
+            const res = await api.post("/auth/login", data);
+            set({ authUser: res.data });
+
+            toast.success("Đăng nhập thành công!");
+        } catch (error) {
+            console.log("Error in register: ", error);
+            toast.error(error.response.data.message);
+        } finally {
+            set({ isLoggingIn: false });
+        }
+    },
+    logout: async () => {
+        try {
+            await api.post("/auth/logout");
+            set({ authUser: null });
+
+            toast.success("Đăng xuất thành công!");
+        } catch (error) {
+            console.log("Error in logout: ", error);
+            toast.error(error.response.data.message);
         }
     }
 }));
