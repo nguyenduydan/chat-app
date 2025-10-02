@@ -52,7 +52,11 @@ function ChatContainer() {
                                     {msg.image && (
                                         <img src={msg.image} alt="Shared" className="rounded-lg h-48 object-cover" />
                                     )}
-                                    {msg.text && <p>{msg.text}</p>}
+                                    {msg.text && (
+                                        <p className="text-wrap break-words whitespace-pre-wrap">
+                                            {msg.text}
+                                        </p>
+                                    )}
                                     <time className="text-xs mt-1 opacity-75 flex items-center gap-1">
                                         {new Date(msg.createdAt).toLocaleTimeString(undefined, {
                                             hour: "2-digit",
