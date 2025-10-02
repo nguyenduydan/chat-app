@@ -9,16 +9,15 @@ import { ENV } from "./lib/env.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
+import { app, server } from "./lib/socket.js";
 
-
-// ✅ Tạo __dirname chuẩn cho ES Modules
+// Tạo __dirname chuẩn cho ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
 const PORT = ENV.PORT || 3000;
 
-// ✅ Middleware
+// Middleware
 app.use(express.json({ limit: "5mb" }));
 app.use(cors({
     origin: ENV.CLIENT_URL,
@@ -28,13 +27,13 @@ app.use(cors({
 app.options("*", cors());
 app.use(cookieParser());
 
-// ✅ Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 console.warn("App running on ", ENV.APP_ENV);
 
-// ✅ Serve frontend build khi chạy production
+// Serve frontend build khi chạy production
 if (ENV.APP_ENV === "production") {
     try {
         const frontendPath = path.join(__dirname, "../../frontend/dist");
@@ -67,10 +66,10 @@ if (ENV.APP_ENV === "production") {
     }
 }
 
-// ✅ Kết nối DB và khởi động server
+// Kết nối DB và khởi động server
 connectDB()
     .then(() => {
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);
             console.log(`🚀 Host running: http://localhost:${PORT}`);
         });
