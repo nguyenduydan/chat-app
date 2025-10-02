@@ -30,7 +30,7 @@ export const useAuthStore = create((set) => ({
             toast.success("Tạo tài khoản thành công!");
         } catch (error) {
             console.log("Error in register: ", error);
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || "Something went wrong");
         } finally {
             set({ isSigningUp: false });
         }
@@ -44,7 +44,7 @@ export const useAuthStore = create((set) => ({
             toast.success("Đăng nhập thành công!");
         } catch (error) {
             console.log("Error in register: ", error);
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || "Something went wrong");
         } finally {
             set({ isLoggingIn: false });
         }
@@ -57,7 +57,7 @@ export const useAuthStore = create((set) => ({
             toast.success("Đăng xuất thành công!");
         } catch (error) {
             console.log("Error in logout: ", error);
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || "Something went wrong");
         }
     },
 
@@ -68,7 +68,7 @@ export const useAuthStore = create((set) => ({
             toast.success("Cập nhật ảnh đại diện thành công!");
         } catch (error) {
             console.log("Error in update profile: ", error);
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || "Something went wrong");
         }
     }
 }));
