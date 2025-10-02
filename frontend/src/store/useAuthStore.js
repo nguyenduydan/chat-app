@@ -6,7 +6,15 @@ export const useAuthStore = create((set) => ({
     isLoading: false,
 
     login: () => {
-        console.log("We just logged in");
-        set({ isLoggedIn: true, isLoading: true });
+        set({ isLoading: true });
+        try {
+            // Perform async login operation
+            console.log("We just logged in");
+            set({ isLoggedIn: true, isLoading: false });
+            set({ isLoggedIn: true, isLoading: false });
+        } catch (error) {
+            set({ isLoading: false });
+            throw error;
+        }
     }
 }));
