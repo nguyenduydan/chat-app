@@ -97,7 +97,7 @@ export const getChatPartners = async (req, res) => {
                 { senderId: loggedInUserId },
                 { receiverId: loggedInUserId }
             ]
-        });
+        }).sort({ createdAt: -1 });
 
         // Tạo danh sách các userId đã trò chuyện cùng (tránh trùng lặp)
         const chatPartnersIds = [
@@ -113,7 +113,10 @@ export const getChatPartners = async (req, res) => {
         // Lấy thông tin user tương ứng (trừ mật khẩu)
         const chatPartners = await User.find({ _id: { $in: chatPartnersIds } }).select("-password");
 
-        res.status(200).json(chatPartners);
+        const filteredChatPartners = chatPartnersIds.map(
+            id => chatPartners.find(user => user._id.toString() === id)
+        );
+        res.status(200).json(filteredChatPartners);
     } catch (error) {
         console.error("Error in getChatPartners:", error);
         res.status(500).json({ message: "Server error" });
