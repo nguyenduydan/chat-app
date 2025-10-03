@@ -108,20 +108,24 @@ export const getChatPartners = async (req, res) => {
         // Tạo danh sách các userId đã trò chuyện cùng (tránh trùng lặp)
         const chatPartnersIds = [
             ...new Set(
-                messages.map((msg) =>
-                    msg.senderId.toString() === loggedInUserId.toString()
-                        ? msg.receiverId.toString()
-                        : msg.senderId.toString()
-                )
+                messages
+                    .map((msg) =>
+                        msg.senderId?.toString() === loggedInUserId.toString()
+                            ? msg.receiverId?.toString()
+                            : msg.senderId?.toString()
+                    )
+                    .filter((id) => id != null) // Loại bỏ null và undefined
             )
         ];
 
         // Lấy thông tin user tương ứng (trừ mật khẩu)
         const chatPartners = await User.find({ _id: { $in: chatPartnersIds } }).select("-password");
 
-        const filteredChatPartners = chatPartnersIds.map(
-            id => chatPartners.find(user => user._id.toString() === id)
-        );
+        // Sắp xếp theo thứ tự trong chatPartnersIds và loại bỏ user đã bị xóa
+        const filteredChatPartners = chatPartnersIds
+            .map(id => chatPartners.find(user => user._id.toString() === id))
+            .filter(user => user != null); // Loại bỏ undefined/null
+
         res.status(200).json(filteredChatPartners);
     } catch (error) {
         console.error("Error in getChatPartners:", error);
