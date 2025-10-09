@@ -50,6 +50,20 @@
   }
 }
 
+@-webkit-keyframes fade-in {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 20px, 0);
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translateY(10px);
+  }
+}
+
 .animate-ping-slow {
   animation: ping-slow 2s ease-in-out infinite;
 }

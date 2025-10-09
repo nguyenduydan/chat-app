@@ -15,14 +15,17 @@ function ChatPage() {
     const showChatContainer = selectedUser;
 
     return (
-        <div className="relative w-full max-w-6xl h-[80vh] md:h-[800px]">
-            <BorderAnimatedContainer>
+        <div className="relative w-full max-w-6xl h-[90vh] md:h-[800px]">
+            <div className="flex w-full h-full rounded-xl">
                 {/* LEFT SIDE - Danh sách chat */}
                 <div
                     className={`
                         w-full md:w-80
-                        rounded-l-2xl
-                        bg-slate-800/50
+                        rounded-2xl
+                        md:rounded-none
+                        md:rounded-l-2xl
+                        md:rounded-tl-2xl
+                        bg-slate-800/80
                         backdrop-blur-sm
                         flex flex-col
                         h-full
@@ -41,11 +44,11 @@ function ChatPage() {
                 <div
                     className={`
                         flex-1
-                        rounded-r-2xl
+                        rounded-2xl
+                        md:rounded-none
                         md:rounded-r-2xl
-                        rounded-l-2xl md:rounded-l-none
                         flex flex-col
-                        bg-slate-900/50
+                        bg-slate-900/80
                         backdrop-blur-sm
                         h-full
                         ${showChatList ? 'hidden md:flex' : 'flex'}
@@ -59,7 +62,7 @@ function ChatPage() {
                         <NoConversationPlaceholder />
                     )}
                 </div>
-            </BorderAnimatedContainer>
+            </div>
         </div>
     );
 }
