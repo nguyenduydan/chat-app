@@ -61,7 +61,10 @@ function MessageInput() {
     const handleEmojiClick = (emojiData) => setText((prev) => prev + emojiData.emoji);
 
     const handleFocus = () => {
-        if (isMobile) setIsFocused(true);
+        if (isMobile) {
+            setIsFocused(true);
+            setShowEmojiPicker(false);
+        };
     };
 
     const handleBlur = () => {
