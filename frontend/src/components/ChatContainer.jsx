@@ -15,14 +15,13 @@ function ChatContainer() {
         subscribeToMessages,
         unsubscribeFromMessages,
     } = useChatStore();
+
     const { authUser } = useAuthStore();
     const messageEndRef = useRef(null);
 
     useEffect(() => {
         getMessagesByUserId(selectedUser._id);
         subscribeToMessages();
-
-        // clean up
         return () => unsubscribeFromMessages();
     }, [selectedUser, getMessagesByUserId, subscribeToMessages, unsubscribeFromMessages]);
 
@@ -33,9 +32,22 @@ function ChatContainer() {
     }, [messages]);
 
     return (
-        <>
+        <div className="flex flex-col h-full bg-slate-900 rounded-2xl md:rounded-none">
+            {/* Header cố định trên cùng */}
             <ChatHeader />
-            <div className="flex-1 px-6 overflow-y-auto py-8">
+
+            {/* Khu vực chat messages */}
+            <div
+                className="
+                    flex-1
+                    overflow-y-auto
+                    px-3 sm:px-6
+                    py-4 sm:py-8
+                    scrollbar-thin
+                    scrollbar-thumb-slate-700
+                    scrollbar-track-transparent
+                "
+            >
                 {messages.length > 0 && !isMessagesLoading ? (
                     <div className="max-w-3xl mx-auto space-y-3">
                         {messages.map((msg) => (
@@ -44,20 +56,24 @@ function ChatContainer() {
                                 className={`chat ${msg.senderId === authUser._id ? "chat-end" : "chat-start"}`}
                             >
                                 <div
-                                    className={`chat-bubble relative ${msg.senderId === authUser._id
+                                    className={`chat-bubble relative text-sm sm:text-base ${msg.senderId === authUser._id
                                         ? "bg-cyan-600 text-white"
                                         : "bg-slate-800 text-slate-200"
                                         }`}
                                 >
                                     {msg.image && (
-                                        <img src={msg.image} alt="Shared" className="rounded-lg h-48 object-cover" />
+                                        <img
+                                            src={msg.image}
+                                            alt="Shared"
+                                            className="rounded-lg w-full sm:w-auto max-h-60 object-cover mb-1"
+                                        />
                                     )}
                                     {msg.text && (
                                         <p className="text-wrap break-words whitespace-pre-wrap">
                                             {msg.text}
                                         </p>
                                     )}
-                                    <time className="text-xs mt-1 opacity-75 flex items-center gap-1">
+                                    <time className="text-[10px] sm:text-xs mt-1 opacity-75 flex items-center gap-1">
                                         {new Date(msg.createdAt).toLocaleTimeString(undefined, {
                                             hour: "2-digit",
                                             minute: "2-digit",
@@ -66,7 +82,6 @@ function ChatContainer() {
                                 </div>
                             </div>
                         ))}
-                        {/* 👇 scroll target */}
                         <div ref={messageEndRef} />
                     </div>
                 ) : isMessagesLoading ? (
@@ -75,9 +90,8 @@ function ChatContainer() {
                     <NoChatHistoryPlaceholder name={selectedUser.fullName} />
                 )}
             </div>
-
             <MessageInput />
-        </>
+        </div>
     );
 }
 

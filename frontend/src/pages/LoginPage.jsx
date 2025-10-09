@@ -16,7 +16,7 @@ function LoginPage() {
     return (
         <div className="w-full flex items-center justify-center p-4 bg-slate-900">
             <div className="relative w-full max-w-6xl md:h-[800px] h-[650px]">
-                <div className="w-full flex flex-col md:flex-row bg-gradient-to-r from-cyan-950/80 to-indigo-950/80 backdrop-blur-md rounded-xl p-10">
+                <div className="w-full flex flex-col md:flex-row bg-gradient-to-r from-cyan-950/80 to-indigo-950/80 backdrop-blur-md rounded-xl p-2 md:p-10">
                     {/* FORM CLOUMN - LEFT SIDE */}
                     <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30">
                         <div className="w-full max-w-md">

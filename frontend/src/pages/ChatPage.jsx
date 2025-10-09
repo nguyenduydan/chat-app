@@ -41,27 +41,24 @@ function ChatPage() {
                 </div>
 
                 {/* RIGHT SIDE - Khung chat */}
-                <div
-                    className={`
+                <div className={`
                         flex-1
-                        rounded-2xl
-                        md:rounded-none
-                        md:rounded-r-2xl
                         flex flex-col
-                        bg-slate-900/80
-                        backdrop-blur-sm
+                        bg-slate-900 md:bg-slate-900/80
+                        backdrop-blur-sm md:backdrop-blur-sm
                         h-full
-                        ${showChatList ? 'hidden md:flex' : 'flex'}
+                        transition-all duration-300
+                        ${showChatList ? "hidden md:flex" : "flex"}
+                        rounded-none md:rounded-none md:rounded-r-2xl
                     `}
                 >
                     {selectedUser ? (
-                        <>
-                            <ChatContainer />
-                        </>
+                        <ChatContainer />
                     ) : (
                         <NoConversationPlaceholder />
                     )}
                 </div>
+
             </div>
         </div>
     );
