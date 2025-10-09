@@ -2,13 +2,16 @@ import { useRef, useState } from "react";
 import useKeyboardSound from "hooks/useKeyBoardSound";
 import { useChatStore } from "store/useChatStore";
 import toast from "react-hot-toast";
-import { ImageIcon, SendIcon, XIcon } from "lucide-react";
+import { ImageIcon, SendIcon, XIcon, SmileIcon } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
 
 const sendSound = new Audio("/sounds/send.mp3");
+
 function MessageInput() {
     const { playRandomKeyStrokeSound } = useKeyboardSound();
     const [text, setText] = useState("");
     const [imagePreview, setImagePreview] = useState(null);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const fileInputRef = useRef(null);
 
@@ -17,7 +20,7 @@ function MessageInput() {
     const handleSendMessage = (e) => {
         e.preventDefault();
         if (!text.trim() && !imagePreview) return;
-        if (isSoundEnabled) sendSound.play().catch((error) => console.log("Audio play failed:", error));;
+        if (isSoundEnabled) sendSound.play().catch((error) => console.log("Audio play failed:", error));
 
         sendMessage({
             text: text.trim(),
@@ -26,6 +29,7 @@ function MessageInput() {
         setText("");
         setImagePreview("");
         if (fileInputRef.current) fileInputRef.current.value = "";
+        setShowEmojiPicker(false); // đóng picker khi gửi
     };
 
     const handleImageChange = (e) => {
@@ -45,8 +49,13 @@ function MessageInput() {
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
+    const handleEmojiClick = (emojiData) => {
+        setText((prev) => prev + emojiData.emoji);
+    };
+
     return (
-        <div className="p-4 border-t border-slate-700/50">
+        <div className="p-4 border-t border-slate-700/50 relative">
+            {/* IMAGE PREVIEW */}
             {imagePreview && (
                 <div className="max-w-3xl mx-auto mb-3 flex items-center">
                     <div className="relative">
@@ -66,7 +75,7 @@ function MessageInput() {
                 </div>
             )}
 
-            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto flex space-x-2">
+            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto flex space-x-2 items-center">
                 <input
                     type="text"
                     value={text}
@@ -74,7 +83,7 @@ function MessageInput() {
                         setText(e.target.value);
                         isSoundEnabled && playRandomKeyStrokeSound();
                     }}
-                    className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-full py-2 px-4"
+                    className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-full py-2 px-4 text-white focus:outline-none"
                     placeholder="Aa"
                 />
 
@@ -86,18 +95,42 @@ function MessageInput() {
                     className="hidden"
                 />
 
+                {/* EMOJI BUTTON */}
+                <div className="relative">
+                    <button
+                        type="button"
+                        onClick={() => setShowEmojiPicker((prev) => !prev)}
+                        className="btn btn-circle btn-ghost text-slate-400 hover:text-slate-200 p-3 transition-colors"
+                    >
+                        <SmileIcon className="w-5 h-5" />
+                    </button>
+
+                    {showEmojiPicker && (
+                        <div className="absolute bottom-12 right-0 z-50">
+                            <EmojiPicker
+                                onEmojiClick={handleEmojiClick}
+                                theme="dark"
+                                width={300}
+                                height={380}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                {/* IMAGE BUTTON */}
                 <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className={`btn btn-circle btn-ghost text-slate-400 hover:text-slate-200 p-3 transition-colors ${imagePreview ? "text-cyan-500" : ""
-                        }`}
+                    className={`btn btn-circle btn-ghost text-slate-400 hover:text-slate-200 p-3 transition-colors ${imagePreview ? "text-cyan-500" : ""}`}
                 >
                     <ImageIcon className="w-5 h-5" />
                 </button>
+
+                {/* SEND BUTTON */}
                 <button
                     type="submit"
                     disabled={!text.trim() && !imagePreview}
-                    className="send-btn disabled:opacity-50 disabled:cursor-not-allowed "
+                    className="send-btn disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <SendIcon className="w-5 h-5 text-cyan-300" />
                 </button>
@@ -105,4 +138,5 @@ function MessageInput() {
         </div>
     );
 }
+
 export default MessageInput;
