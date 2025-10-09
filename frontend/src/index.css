@@ -1,41 +1,71 @@
+/* --------------------------------------------------
+   🧩 Tailwind layers
+-------------------------------------------------- */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* --------------------------------------------------
+   ⚙️ Custom properties (CSS variables)
+-------------------------------------------------- */
 @property --border-angle {
+  syntax: '<angle>';
   inherits: false;
   initial-value: 0deg;
-  syntax: '<angle>';
 }
 
+/* --------------------------------------------------
+   🧠 Input styling (auth & general forms)
+-------------------------------------------------- */
 .input {
-  @apply w-full bg-slate-800/50 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent;
+  @apply w-full bg-slate-800/60 border border-slate-700/60 rounded-lg py-2 pl-10 pr-4 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all duration-200;
+
+  /* Giúp input hoạt động tốt trên iOS */
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .auth-input-icon {
-  @apply absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 size-5;
+  @apply absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 size-5 pointer-events-none;
 }
 
 .auth-input-label {
-  @apply block text-sm font-medium text-slate-300 mb-2;
+  @apply block text-sm font-medium text-slate-300 mb-2 select-none;
 }
 
+/* --------------------------------------------------
+   🎯 Auth buttons / badges / links
+-------------------------------------------------- */
 .auth-badge {
   @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/20 text-cyan-300;
 }
 
 .auth-btn {
-  @apply w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg py-2.5 font-semibold tracking-wide hover:from-cyan-600 hover:to-blue-600 focus:ring-2 focus:ring-cyan-400 focus:outline-none transition-all duration-300 ease-in-out shadow-lg hover:shadow-cyan-300/40 hover:scale-[1.03];
+  @apply w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg py-2.5 font-semibold tracking-wide shadow-lg hover:shadow-cyan-300/40 focus:ring-2 focus:ring-cyan-400 focus:outline-none transition-all duration-300 ease-in-out hover:from-cyan-600 hover:to-blue-600 active:scale-95;
+
+  /* Cho phép tap hiệu quả trên mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .auth-link {
-  @apply px-4 py-2 inline-block bg-cyan-500/10 rounded-lg text-cyan-400 hover:text-cyan-500 text-sm transition-colors;
+  @apply inline-block px-4 py-2 bg-cyan-500/10 rounded-lg text-cyan-400 hover:text-cyan-500 text-sm transition-colors duration-200 ease-out select-none;
 }
 
+/* --------------------------------------------------
+   💬 Send button (chat)
+-------------------------------------------------- */
 .send-btn {
-  @apply btn btn-circle btn-ghost p-3 font-medium bg-gradient-to-r text-white rounded-full tracking-wide hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-out hover:shadow-cyan-300/40 hover:scale-[1.03];
+  @apply btn btn-circle btn-ghost p-3 font-medium bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full tracking-wide transition-all duration-300 ease-out hover:from-cyan-600 hover:to-blue-600 hover:shadow-cyan-300/40 hover:scale-[1.05] active:scale-95;
+
+  /* Fix ripple/ghost effect on mobile Safari */
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* --------------------------------------------------
+   ✨ Animations (smooth & optimized)
+-------------------------------------------------- */
+
+/* 🔄 Ping slow */
 @keyframes ping-slow {
 
   0%,
@@ -50,20 +80,71 @@
   }
 }
 
-@-webkit-keyframes fade-in {
+.animate-ping-slow {
+  animation: ping-slow 2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* 🌫 Fade-in (fixed for Safari & Chrome) */
+@keyframes fade-in {
   from {
     opacity: 0;
-    -webkit-transform: translate3d(0, 20px, 0);
-    transform: translateY(0);
+    transform: translateY(10px);
   }
 
   to {
     opacity: 1;
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translateY(10px);
+    transform: translateY(0);
   }
 }
 
-.animate-ping-slow {
-  animation: ping-slow 2s ease-in-out infinite;
+/* Support for WebKit (Safari) */
+@-webkit-keyframes fade-in {
+  from {
+    opacity: 0;
+    -webkit-transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+  }
+}
+
+/* Add reusable utility */
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
+
+/* --------------------------------------------------
+   📱 Responsive fixes
+-------------------------------------------------- */
+
+/* Ngăn phóng to font-size khi focus input trên iPhone */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+/* Giúp backdrop-blur hoạt động ổn định */
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* Giảm giật animation khi scroll trên mobile */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tối ưu hiệu ứng hover (bỏ hover trên mobile) */
+@media (hover: none) {
+
+  .auth-btn:hover,
+  .auth-link:hover,
+  .send-btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }
